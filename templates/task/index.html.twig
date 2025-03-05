@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tâches{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('/css/accueil.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Liste des tâches</h1>
+
+    <div class="actions">
+        <a href="{{ path('app_task_new') }}" class="btn btn-primary">Créer une nouvelle tâche</a>
+    </div>
+
+    <!-- Formulaire de filtrage -->
+    <form method="get" action="{{ path('app_task_index') }}" class="filter-form">
+        <label for="filter">Filtrer :</label>
+        <select name="filter" id="filter" onchange="this.form.submit()">
+            <option value="all" {% if filter == 'all' %}selected{% endif %}>Toutes</option>
+            <option value="done" {% if filter == 'done' %}selected{% endif %}>Terminées</option>
+            <option value="not_done" {% if filter == 'not_done' %}selected{% endif %}>Non terminées</option>
+        </select>
+    </form>
+
+    <ul class="task-list">
+        {% for task in tasks %}
+            <li class="task-item">
+                <div class="task-info">
+                    <span class="task-title">{{ task.title }}</span>
+                    <span class="task-description">{{ task.description }}</span>
+                    {% if task.status %}
+                        <span class="status done">Terminée</span>
+                    {% else %}
+                        <span class="status not-done">Non terminée</span>
+                    {% endif %}
+                </div>
+                <div class="task-actions">
+                    <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-edit">Modifier</a>
+
+                    <form method="post" action="{{ path('app_task_delete', {'id': task.id}) }}" class="inline-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                        <button type="submit" class="btn btn-delete">Supprimer</button>
+                    </form>
+
+                    {% if not task.status %}
+                        <form method="post" action="{{ path('app_task_mark_done', {'id': task.id}) }}" class="inline-form">
+                            <button type="submit" class="btn btn-done">Marquer comme terminé</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </li>
+        {% else %}
+            <li class="no-task">Aucune tâche trouvée.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

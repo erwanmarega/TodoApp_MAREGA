@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Task{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('/css/new-page.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Create new Task</h1>
+
+        <div class="form-wrapper">
+            {{ include('task/_form.html.twig') }}
+        </div>
+
+        <a href="{{ path('app_task_index') }}" class="back-to-list">Back to list</a>
+    </div>
+{% endblock %}
